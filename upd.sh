@@ -22,4 +22,5 @@ sudo mv ${base}htdocs/api/api.js ${base}htdocs/api/api.js.${today}
 sudo mv api.js ${base}htdocs/api/api.js
 sudo mv ${base}htdocs/api/webiopi.html ${base}htdocs/api/webiopi.html.${today}
 sudo mv webiopi.html ${base}htdocs/api/webiopi.html
+sudo systemctl restart webiopi
 echo 'Update is completed!'
