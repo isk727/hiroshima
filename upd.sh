@@ -2,20 +2,24 @@
 base='/usr/share/webiopi/'
 git='https://raw.githubusercontent.com/isk727/hiroshima/main/'
 today=`date "+%Y%m%d%H%M%S"`
-wget ${git}p2pv64.html
-chmod 777 p2pv64.html
-wget ${git}scriptv.js
-chmod 777 scriptv.js
-wget ${git}stylev.css
-chmod 777 stylev.css
-wget ${git}stylev_sp.css
-chmod 777 stylev_sp.css
-sudo mv ${base}p2pv.html ${base}p2pv.html.${today}
-sudo mv p2pv64.html ${base}p2pv.html
-sudo mv ${base}js/scriptv.js ${base}js/scriptv.js.${today}
-sudo mv scriptv.js ${base}js/scriptv.js
-sudo mv ${base}css/stylev.css ${base}css/stylev.css.${today}
-sudo mv stylev.css ${base}css/stylev.css
-sudo mv ${base}css/stylev_sp.css ${base}css/stylev_sp.css.${today}
-sudo mv stylev_sp.css ${base}css/stylev_sp.css
+wget ${git}config.ini
+chmod 777 config.ini
+wget ${git}game.py
+chmod 777 game.py
+wget ${git}script.py
+chmod 777 script.py
+wget ${git}api.js
+chmod 777 api.js
+wget ${git}webiopi.html
+chmod 777 webiopi.html
+sudo mv ${base}python/config.ini ${base}python/config.ini.${today}
+sudo mv config.ini ${base}config.ini
+sudo mv ${base}python/game.py ${base}python/game.py.${today}
+sudo mv game.py ${base}python/game.py
+sudo mv ${base}python/script.py ${base}python/script.py.${today}
+sudo mv script.py ${base}python/script.py
+sudo mv ${base}htdocs/api/api.js ${base}htdocs/api/api.js.${today}
+sudo mv api.js ${base}htdocs/api/api.js
+sudo mv ${base}htdocs/api/webiopi.html ${base}htdocs/api/webiopi.html.${today}
+sudo mv webiopi.html ${base}htdocs/api/webiopi.html
 echo 'Update is completed!'
