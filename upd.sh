@@ -13,7 +13,7 @@ chmod 777 api.js
 wget ${git}webiopi.html
 chmod 777 webiopi.html
 sudo mv ${base}python/config.ini ${base}python/config.ini.${today}
-sudo mv config.ini ${base}config.ini
+sudo mv config.ini ${base}python/config.ini
 sudo mv ${base}python/game.py ${base}python/game.py.${today}
 sudo mv game.py ${base}python/game.py
 sudo mv ${base}python/script.py ${base}python/script.py.${today}
