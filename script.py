@@ -125,7 +125,11 @@ def clear():
   global config_ini
   GPIO.output(int(config_ini['GPIO']['CLEAR1']), GPIO.HIGH)
   time.sleep(0.1)
+  GPIO.output(int(config_ini['GPIO']['CLEAR1']), GPIO.LOW)
+  time.sleep(0.1)
   GPIO.output(int(config_ini['GPIO']['CLEAR2']), GPIO.HIGH)
+  time.sleep(0.1)
+  GPIO.output(int(config_ini['GPIO']['CLEAR2']), GPIO.LOW)
 
 # ################################
 def destroy():
