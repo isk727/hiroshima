@@ -123,9 +123,9 @@ def set_point(n):
 # --------------------------------
 def clear():
   global config_ini
-  GPIO.output(int(config_ini['GPI0']['CLEAR1']), GPIO.HIGH)
+  GPIO.output(int(config_ini['GPIO']['CLEAR1']), GPIO.HIGH)
   time.sleep(0.1)
-  GPIO.output(int(config_ini['GPI0']['CLEAR2']), GPIO.HIGH)
+  GPIO.output(int(config_ini['GPIO']['CLEAR2']), GPIO.HIGH)
 
 # ################################
 def destroy():
