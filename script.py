@@ -46,9 +46,14 @@ def event_callback_credit_dec(gpio_pin):
   time.sleep(0.05) # 200402
 #    if GPIO.input(CREDIT_INC) == GPIO.LOW: # 200402
 #    if credit != 0: # 200305
-  if xgame.credit != 0: # 200305
+  if xgame.credit > 0: # 200305
     xgame.credit = int(xgame.credit) - 1
     xgame.point = int(xgame.point) - 1
+    xgame.ct_bw = int(xgame.ct_bw) + 1
+    if xgame.ct_bw == 3:
+      xgame.bwCount = int(xgame.bwCount) + 1
+      xgame.ct_bw = 0
+# ct_bw
 #        credit = int(credit) - 1
 #        point = int(point) - 1
 
@@ -62,48 +67,38 @@ def event_callback_credit_inc(gpio_pin):
   xgame.point = int(xgame.point) + 1
 
 def event_callback_status_rb(gpio_pin):
-  global rb_sig_timer
-  global xgame
   global config_ini
+  global xgame
   if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
     time.sleep(0.01)
-    rb_sig_timer
+    xgame.rb_sig_timer
     if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
       time.sleep(0.1)
       if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
-#        if (st_bb == 0 and st_rb == 0):
         if (xgame.st_bb == 0 and xgame.st_rb == 0):
-#          st_rb = 1
           xgame.st_rb = 1
           xgame.ct_rb = int(xgame.ct_rb) + 1
-#          rbCount = int(rbCount) + 1
           xgame.rbCount = int(xgame.rbCount) + 1
-          #countUp(bwCount, 2) # bb:2
-          #bwCount = 0
+          xgame.bwCount = 0
   else:
-    rb_sig_timer = 0
+    xgame.rb_sig_timer = 0
 
 def event_callback_status_bb(gpio_pin):
-  global bb_sig_timer
-  global xgame
   global config_ini
+  global xgame
   if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
     time.sleep(0.01)
-    rb_sig_timer
+    xgame.bb_sig_timer
     if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
       time.sleep(0.1)
       if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
-#        if (st_bb == 0 and st_rb == 0):
         if (xgame.st_bb == 0 and xgame.st_rb == 0):
-#          st_rb = 1
           xgame.st_bb = 1
           xgame.ct_bb = int(xgame.ct_bb) + 1
-#          bbCount = int(bbCount) + 1
           xgame.bbCount = int(xgame.bbCount) + 1
-          #countUp(bwCount, 2) # bb:2
-          #bwCount = 0
+          xgame.bwCount = 0
   else:
-    bb_sig_timer = 0
+    xgame.bb_sig_timer = 0
 
 # --------------------------------
 # 開始ポイントを設定
@@ -123,13 +118,10 @@ def set_point(n):
 # --------------------------------
 def clear():
   global config_ini
-  GPIO.output(int(config_ini['GPIO']['CLEAR1']), GPIO.HIGH)
-  time.sleep(0.1)
-  GPIO.output(int(config_ini['GPIO']['CLEAR1']), GPIO.LOW)
-  time.sleep(0.1)
-  GPIO.output(int(config_ini['GPIO']['CLEAR2']), GPIO.HIGH)
-  time.sleep(0.1)
-  GPIO.output(int(config_ini['GPIO']['CLEAR2']), GPIO.LOW)
+  if (int(e) > 0):
+    GPIO.output(int(config_ini['GPI0']['CLEAR1']), GPIO.HIGH)
+    time.sleep(0.1)
+    GPIO.output(int(config_ini['GPI0']['CLEAR2']), GPIO.HIGH)
 
 # ################################
 def destroy():
