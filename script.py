@@ -10,29 +10,23 @@ import game
 config_ini = configparser.ConfigParser()
 config_ini.read('../python/config.ini', encoding='utf-8')
 xgame = game.GameClass(config_ini['DEFAULT']['json_file'])
-rb_sig_timer = 0
-bb_sig_timer = 0
 
 def setup():
   global config_ini
   GPIO.setmode(GPIO.BCM)
-
   GPIO.setup(int(config_ini['GPIO']['IN']), GPIO.IN)
   GPIO.setup(int(config_ini['GPIO']['OUT']), GPIO.IN)
   GPIO.setup(int(config_ini['GPIO']['RB']), GPIO.IN)
   GPIO.setup(int(config_ini['GPIO']['BB']), GPIO.IN)
-
-  GPIO.setup(int(config_ini['GPIO']['PAYOUT1']), GPIO.OUT)#（50msec ON OFF)
+  GPIO.setup(int(config_ini['GPIO']['PAYOUT1']), GPIO.OUT)
   GPIO.setup(int(config_ini['GPIO']['PAYOUT2']), GPIO.OUT)
   GPIO.setup(int(config_ini['GPIO']['CLEAR1']), GPIO.OUT)
   GPIO.setup(int(config_ini['GPIO']['CLEAR2']), GPIO.OUT)
-  GPIO.setup(int(config_ini['GPIO']['CREDIT']), GPIO.OUT)# （50msec ON OFF)
-
+  GPIO.setup(int(config_ini['GPIO']['CREDIT']), GPIO.OUT)
   GPIO.add_event_detect(int(config_ini['GPIO']['IN']), GPIO.RISING, bouncetime=5)
   GPIO.add_event_callback(int(config_ini['GPIO']['IN']), event_callback_credit_dec)
   GPIO.add_event_detect(int(config_ini['GPIO']['OUT']), GPIO.RISING, bouncetime=5)
   GPIO.add_event_callback(int(config_ini['GPIO']['OUT']), event_callback_credit_inc)
-
   GPIO.add_event_detect(int(config_ini['GPIO']['RB']), GPIO.BOTH, bouncetime=5)
   GPIO.add_event_callback(int(config_ini['GPIO']['RB']), event_callback_status_rb)
   GPIO.add_event_detect(int(config_ini['GPIO']['BB']), GPIO.BOTH, bouncetime=5)
@@ -43,26 +37,18 @@ def loop():
 
 def event_callback_credit_dec(gpio_pin):
   global xgame
-  time.sleep(0.05) # 200402
-#    if GPIO.input(CREDIT_INC) == GPIO.LOW: # 200402
-#    if credit != 0: # 200305
-  if xgame.credit > 0: # 200305
+  time.sleep(0.05)
+  if xgame.credit > 0:
     xgame.credit = int(xgame.credit) - 1
     xgame.point = int(xgame.point) - 1
-    xgame.ct_bw = int(xgame.ct_bw) + 1
-    if xgame.ct_bw == 3:
-      xgame.bwCount = int(xgame.bwCount) + 1
-      xgame.ct_bw = 0
-# ct_bw
-#        credit = int(credit) - 1
-#        point = int(point) - 1
+    xgame.st_bw = int(xgame.st_bw) + 1
+    if xgame.st_bw == 3:
+      xgame.ct_bw = int(xgame.ct_bw) + 1
+      xgame.st_bw = 0
 
 def event_callback_credit_inc(gpio_pin):
   global xgame
-  time.sleep(0.05) # 200402
-#    if GPIO.input(CREDIT_INC) == GPIO.LOW: # 200402
-#    credit = int(credit) + 1
-#    point = int(point) + 1
+  time.sleep(0.05)
   xgame.credit = int(xgame.credit) + 1
   xgame.point = int(xgame.point) + 1
 
@@ -70,35 +56,25 @@ def event_callback_status_rb(gpio_pin):
   global config_ini
   global xgame
   if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
-    time.sleep(0.01)
-    xgame.rb_sig_timer
-    if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
-      time.sleep(0.1)
-      if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
-        if (xgame.st_bb == 0 and xgame.st_rb == 0):
-          xgame.st_rb = 1
-          xgame.ct_rb = int(xgame.ct_rb) + 1
-          xgame.rbCount = int(xgame.rbCount) + 1
-          xgame.bwCount = 0
+    if (xgame.st_bb == 0 and xgame.st_rb == 0):
+      xgame.ct_rb = int(xgame.ct_rb) + 1
+      xgame.st_rb = 1
+      xgame.st_bw = 0
+      xgame.ct_bw = 0
   else:
-    xgame.rb_sig_timer = 0
+    xgame.st_rb = 0
 
 def event_callback_status_bb(gpio_pin):
   global config_ini
   global xgame
   if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
-    time.sleep(0.01)
-    xgame.bb_sig_timer
-    if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
-      time.sleep(0.1)
-      if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
-        if (xgame.st_bb == 0 and xgame.st_rb == 0):
-          xgame.st_bb = 1
-          xgame.ct_bb = int(xgame.ct_bb) + 1
-          xgame.bbCount = int(xgame.bbCount) + 1
-          xgame.bwCount = 0
+    if (xgame.st_bb == 0 and xgame.st_rb == 0):
+      xgame.ct_bb = int(xgame.ct_bb) + 1
+      xgame.st_bb = 1
+      xgame.st_bw = 0
+      xgame.ct_bw = 0
   else:
-    xgame.bb_sig_timer = 0
+    xgame.st_bb = 0
 
 # --------------------------------
 # 開始ポイントを設定
@@ -118,10 +94,9 @@ def set_point(n):
 # --------------------------------
 def clear():
   global config_ini
-  if (int(e) > 0):
-    GPIO.output(int(config_ini['GPI0']['CLEAR1']), GPIO.HIGH)
-    time.sleep(0.1)
-    GPIO.output(int(config_ini['GPI0']['CLEAR2']), GPIO.HIGH)
+  GPIO.output(int(config_ini['GPI0']['CLEAR1']), GPIO.HIGH)
+  time.sleep(0.1)
+  GPIO.output(int(config_ini['GPI0']['CLEAR2']), GPIO.HIGH)
 
 # ################################
 def destroy():
