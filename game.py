@@ -14,20 +14,12 @@ class GameClass:
     self.stop_pt = int(point)
     self.point = 0
     self.credit = int(point)
-
     self.ct_rb = 0
     self.st_rb = 0
-    self.rbCount = 0
-    self.rb_sig_timer = 0
-
     self.ct_bb = 0
     self.st_bb = 0
-    self.bbCount = 0
-    self.bb_sig_timer = 0
-    
     self.ct_bw = 0
-    self.bwCount = 0
-
+    self.st_bw = 0
     self.start_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     self.stop_at = ""
 
@@ -42,11 +34,8 @@ class GameClass:
       "stop_pt": int(self.stop_pt),
       "credit": int(self.credit),
       "rb": int(self.ct_rb),
-#      "rb2": int(self.rbCount),
       "bb": int(self.ct_bb),
-      "bw": int(self.bwCount),
-#      "credit": int(self.credit),
-#      "point": int(self.point),
+      "bw": int(self.ct_bw),
       "start_at": self.start_at,
       "stop_at": self.stop_at,
     }
