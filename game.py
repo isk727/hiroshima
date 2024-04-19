@@ -7,7 +7,7 @@ class GameClass:
 
   def __del__(self):
     print('instance has been destroyed.')
- 
+
   def start(self, gkey, point):
     self.gkey = gkey
     self.start_pt = int(point)
