@@ -41,9 +41,17 @@ def event_callback_credit_dec(gpio_pin):
     xgame.credit = int(xgame.credit) - 1
     xgame.point = int(xgame.point) - 1
     xgame.st_bw = int(xgame.st_bw) + 1
+    xgame.st_rbw = int(xgame.st_rbw) + 1
+    xgame.st_bbw = int(xgame.st_bbw) + 1
     if xgame.st_bw == 3:
       xgame.ct_bw = int(xgame.ct_bw) + 1
       xgame.st_bw = 0
+    if xgame.st_rbw == 3:
+      xgame.ct_rbw = int(xgame.ct_rbw) + 1
+      xgame.st_rbw = 0
+    if xgame.st_bbw == 3:
+      xgame.ct_bbw = int(xgame.ct_bbw) + 1
+      xgame.st_bbw = 0
 
 def event_callback_credit_inc(gpio_pin):
   global xgame
@@ -56,22 +64,35 @@ def event_callback_status_rb(gpio_pin):
   global xgame
   if GPIO.input(int(config_ini['GPIO']['RB'])) == GPIO.LOW:
     if (xgame.st_bb == 0 and xgame.st_rb == 0):
-      xgame.ct_rb = int(xgame.ct_rb) + 1
+      xgame.last_bonus = 'RB'
       xgame.st_rb = 1
-      xgame.st_bw = 0
+      xgame.ct_rb = int(xgame.ct_rb) + 1
+      xgame.listw.append(xgame.ct_bw)
+      xgame.listr.append(xgame.ct_rbw)
+      log("listr.append " + str(xgame.ct_rbw))
       xgame.ct_bw = 0
+      xgame.st_bw = 0
+      xgame.ct_rbw = 0 # db
+      xgame.st_rbw = 0 # db
   else:
     xgame.st_rb = 0
+    xgame.st_rbw = 0
 
 def event_callback_status_bb(gpio_pin):
   global config_ini
   global xgame
   if GPIO.input(int(config_ini['GPIO']['BB'])) == GPIO.LOW:
     if (xgame.st_bb == 0 and xgame.st_rb == 0):
-      xgame.ct_bb = int(xgame.ct_bb) + 1
+      xgame.last_bonus = 'BB'
       xgame.st_bb = 1
-      xgame.st_bw = 0
+      xgame.ct_bb = int(xgame.ct_bb) + 1
+      xgame.listw.append(xgame.ct_bw)
+      xgame.listb.append(xgame.ct_bbw)
+      log("listb.append " + str(xgame.ct_bbw))
       xgame.ct_bw = 0
+      xgame.st_bw = 0
+      xgame.ct_bbw = 0 # db
+      xgame.st_bbw = 0 # db
   else:
     xgame.st_bb = 0
 
@@ -118,17 +139,20 @@ def log(s):
 def start_game(gkey, point):
   global xgame
   set_point(int(point))
-  xgame.start(gkey, point)
+  xgame.start_game(gkey, point)
   xgame.json_dump()
 
 @webiopi.macro
 def check_game(gkey, point):
   global xgame
+  xgame.check_game()
   xgame.json_dump()
 
 @webiopi.macro
 def stop_game(gkey, point):
   global xgame
-  xgame.stop(gkey)
+  log("last_bonus=" + xgame.last_bonus + " ct_bw=" + str(xgame.ct_bw) + " ct_rbw=" + str(xgame.ct_rbw) + " ct_bbw=" + str(xgame.ct_bbw)) 
+  log("last_bonus=" + xgame.last_bonus + " listr_size=" + str(len(xgame.listr)) + " listb_size=" + str(len(xgame.listb))) 
+  xgame.stop_game()
   xgame.json_dump()
   clear()
