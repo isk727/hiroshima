@@ -44,8 +44,10 @@ class GameClass:
     self.listw.append(self.ct_bw)
     self.listr.append(self.ct_rbw)
     self.listb.append(self.ct_bbw)
-    self.bw_rb = ','.join(map(str, self.listr))
-    self.bw_bb = ','.join(map(str, self.listb))
+#    self.bw_rb = ','.join(map(str, self.listr))
+#    self.bw_bb = ','.join(map(str, self.listb))
+    self.bw_rb = ','.join(map(str, self.verify_arr(self.listr, self.ct_rb)))
+    self.bw_bb = ','.join(map(str, self.verify_arr(self.listb, self.ct_bb)))
     self.stop_pt = self.credit
     self.stop_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -67,6 +69,14 @@ class GameClass:
     }
     with open(self.json_file, 'w') as f:
       json.dump(dict, f, ensure_ascii=False)
+
+  def verify_arr(self, list1, ct):
+    for i in range((ct + 1) - len(list1)):
+      list1.append(0)
+    lst = []
+    for i in range(ct + 1):
+      lst.append(list1[i])
+    return lst
 
   def log(self, s):
     with open('/usr/share/webiopi/htdocs/api/debug2.log', 'a') as f:
